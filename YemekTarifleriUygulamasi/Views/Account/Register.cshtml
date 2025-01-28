@@ -1,0 +1,235 @@
+﻿@model YemekTarifleriUygulamasi.Models.User
+
+@{
+    ViewData["Title"] = "Kayıt Ol";
+}
+<body class="page-background">
+    <div class="form-container">
+        <h2>Kayıt Ol</h2>
+
+        <form asp-action="Register" method="post">
+            <div class="mb-3">
+                <label for="username" class="form-label">Kullanıcı Adı:</label>
+                <input asp-for="Username" class="form-control input-text" id="username" required />
+                <span asp-validation-for="Username" class="text-danger"></span>
+                <span id="usernameError" style="color:red; display:none;">Bu kullanıcı adı zaten alınmış.</span>
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">Şifre:</label>
+                <div class="input-group">
+                    <input asp-for="Password" class="form-control input-text" id="password" type="password" required />
+                    <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                        <i class="bi bi-eye-slash" id="eyeIcon"></i>
+                    </button>
+                </div>
+                <span asp-validation-for="Password" class="text-danger" id="passwordWarning"></span>
+                <span id="passwordNumberWarning" class="text-danger" style="display:none;">Şifre en az bir sayı içermelidir.</span>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">E-posta:</label>
+                <input asp-for="Email" class="form-control input-text" id="email" required />
+                <span asp-validation-for="Email" class="text-danger"></span>
+                <span id="emailValidationMessage"></span>
+                <span id="emailError" style="color:red; display:none;">Bu e-posta adresi zaten alınmış.</span>
+                <span id="emailWarning" style="color:red; display:none;"></span> <!-- Yeni E-posta uyarısı -->
+            </div>
+            <button type="submit" class="btn btn-primary">Kayıt Ol</button>
+
+        </form>
+
+        <p class="login-link">Zaten bir hesabınız var mı? <a asp-controller="Account" asp-action="Login">Giriş Yap</a></p>
+    </div>
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script> <!-- Bootstrap Icons Kütüphanesi -->
+
+<script>
+    // Kullanıcı adı inputu için değişkenler
+    const usernameInput = document.getElementById('username');
+    const usernameError = document.getElementById('usernameError');
+
+    // E-posta inputu için değişkenler
+    const emailInput = document.getElementById('email');
+    const emailError = document.getElementById('emailError');
+    const emailWarning = document.getElementById('emailWarning'); // emailWarning kısmı eksikti, ekliyoruz
+
+    // Kullanıcı adı inputuna her yeni karakter girildiğinde kontrol et
+    usernameInput.addEventListener('input', async function () {
+        const username = usernameInput.value;
+
+        // Kullanıcı adı boşsa hata mesajını gizle
+        if (username.trim() === "") {
+            usernameError.style.display = 'none';
+            return;
+        }
+
+        // Kullanıcı adı veritabanında var mı diye kontrol etmek için API çağrısı yap
+        const response = await fetch('/Account/IsUsernameTaken?username=' + username);
+        const isUsernameTaken = await response.json();
+
+        // Kullanıcı adı alınmışsa hata mesajını göster, aksi takdirde gizle
+        if (isUsernameTaken) {
+            usernameError.style.display = 'inline';
+        } else {
+            usernameError.style.display = 'none';
+        }
+    });
+
+    // E-posta inputuna her yeni karakter girildiğinde kontrol et
+    emailInput.addEventListener('input', async function () {
+        const email = emailInput.value;
+
+        if (email.trim() === "") {
+            emailError.style.display = 'none';
+            emailWarning.style.display = 'none'; // E-posta boşsa, uyarıları gizle
+            return;
+        }
+
+        // E-posta geçerli formatta mı diye kontrol et
+        const emailPattern = /^[a-zA-Z0-9._-]+[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;  // E-posta regex
+        if (!emailPattern.test(email)) {
+            emailWarning.style.display = 'inline'; // Geçersiz formatta ise uyarı göster
+            emailWarning.textContent = 'Geçerli bir e-posta adresi girin.';
+        } else {
+            emailWarning.style.display = 'none'; // Geçerli e-posta ise uyarıyı gizle
+        }
+
+        // E-posta veritabanında var mı diye kontrol etmek için API çağrısı yap
+        const response = await fetch('/Account/IsEmailTaken?email=' + email);
+        const isEmailTaken = await response.json();
+
+        // E-posta alınmışsa hata mesajını göster, aksi takdirde gizle
+        if (isEmailTaken) {
+            emailError.style.display = 'inline';
+            emailError.textContent = 'Bu e-posta adresi zaten alınmış.';
+        } else {
+            emailError.style.display = 'none';
+        }
+    });
+
+    // Şifreyi gösterip gizlemek için JavaScript kodu
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const eyeIcon = document.getElementById('eyeIcon');
+    const passwordWarning = document.getElementById('passwordWarning');
+    const passwordNumberWarning = document.getElementById('passwordNumberWarning');
+
+    togglePassword.addEventListener('click', function () {
+        // Şifreyi göster ya da gizle
+        const type = passwordInput.type === 'password' ? 'text' : 'password';
+        passwordInput.type = type;
+
+        // İkonu değiştir
+        eyeIcon.classList.toggle('bi-eye');
+        eyeIcon.classList.toggle('bi-eye-slash');
+    });
+
+    // Şifre uzunluğunu ve içerdiği sayıyı kontrol et
+    passwordInput.addEventListener('input', function () {
+        let passwordValue = passwordInput.value;
+        let hasNumber = /\d/.test(passwordValue);  // Şifrede sayı var mı?
+
+        if (passwordValue.length >= 8) {
+            passwordWarning.style.display = 'none';  // Uyarıyı gizle
+        } else {
+            passwordWarning.style.display = 'inline';  // Uyarıyı göster
+            passwordWarning.textContent = 'Şifre en az 8 karakter olmalıdır.';
+        }
+
+        if (hasNumber) {
+            passwordNumberWarning.style.display = 'none';  // Sayı uyarısını gizle
+        } else {
+            passwordNumberWarning.style.display = 'inline';  // Sayı uyarısını göster
+        }
+    });
+
+    $('#Email').on('blur', function () {
+        const email = $(this).val();
+        $.ajax({
+            url: '/Account/IsEmailAvailable',
+            type: 'GET',
+            data: { email: email },
+            success: function (response) {
+                if (!response) {
+                    $('#emailValidationMessage').text('Bu e-posta adresi zaten alınmış.').css('color', 'red');
+                } else {
+                    $('#emailValidationMessage').text('E-posta adresi kullanılabilir.').css('color', 'green');
+                }
+            },
+            error: function () {
+                alert("Bir hata oluştu. Lütfen tekrar deneyin.");
+            }
+        });
+    });
+
+</script>
+
+
+<style>
+    body.page-background {
+        background-color: #d3d3d3; /* Gri arka plan */
+        margin-top: 200px;
+    }
+
+    .form-container {
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #ffcc99; /* Daha açık turuncu kutu içi */
+        border: 3px solid #cc3333; /* Koyu kırmızı çerçeve ve kalın */
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center; /* Ortalamak için */
+    }
+
+        .form-container h2 {
+            margin-bottom: 20px;
+        }
+
+    .login-link {
+        margin-top: 20px;
+        text-align: center; /* Ortalamak için */
+    }
+
+        .login-link a {
+            color: #cc3333; /* Koyu kırmızı renk */
+            text-decoration: none;
+        }
+
+            .login-link a:hover {
+                text-decoration: underline;
+            }
+
+    .input-text {
+        background-color: #ffffff; /* Beyaz arka plan */
+    }
+
+    /* Kullanıcı adı, şifre ve e-posta etiketlerini sola yasla */
+    .form-container label {
+        text-align: left;
+        display: block;
+    }
+
+    /* Şifreyi gizleyip gösterme butonunun stilini ayarlama */
+    .input-group {
+        position: relative;
+    }
+
+    #togglePassword {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    /* Eye icon */
+    .bi-eye, .bi-eye-slash {
+        font-size: 18px;
+        color: #cc3333;
+    }
+</style>

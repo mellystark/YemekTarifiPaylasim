@@ -1,0 +1,198 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <div id="myCarousel" class="carousel slide" data-ride="carousel">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                <li data-target="#myCarousel" data-slide-to="1"></li>
+                <li data-target="#myCarousel" data-slide-to="2"></li>
+            </ol>
+
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner">
+                <div class="item active">
+                    <img src="https://mediatrend.mediamarkt.com.tr/wp-content/uploads/2020/11/yemek-fotografciligi-00.jpg" alt="Los Angeles" style="width:100%;">
+                </div>
+
+                <div class="item">
+                    <img src="https://lezzetlikareler.com/images/gorseller/hamburger-fotograf-cekimi.jpg" alt="Chicago" style="width:100%;">
+                </div>
+
+                <div class="item">
+                    <img src="https://www.bonus.com.tr/assets/images/imported/fransa_23024.webp" alt="New york" style="width:100%;">
+                </div>
+            </div>
+
+            <style>
+                .carousel-inner {
+                    max-width: 800px; /* Resimlerin toplam genişliği */
+                    margin: 0 auto; /* Ortalamak için */
+                    position: relative; /* Gölge ve pozisyonlandırma için */
+                    overflow: hidden; /* Taşan alanları gizlemek için */
+                }
+
+                    .carousel-inner .item {
+                        border: 5px solid rgba(0, 0, 0, 0.1); /* Hafif gri renkli dış sınır ekledik */
+                        border-radius: 10px; /* Köşeleri yuvarla */
+                        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6); /* Daha koyu gölge */
+                        transition: box-shadow 0.3s ease; /* Hover animasyonu için kutu gölgesi geçişi */
+                    }
+
+                        .carousel-inner .item img {
+                            width: 100%; /* Resmi genişliğe uyacak şekilde boyutlandır */
+                            height: 500px; /* Yükseklik */
+                            object-fit: cover; /* Resimlerin orantılı görünmesini sağla */
+                            border-radius: 10px; /* Köşeleri yuvarla */
+                            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animasyon ve geçiş */
+                            box-shadow: none; /* Resmin çevresinde gölge yok */
+                        }
+
+                        .carousel-inner .item:hover {
+                            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.8); /* Hover durumunda kutu etrafında koyu gölge */
+                        }
+
+                        .carousel-inner .item img:hover {
+                            transform: scale(1.05); /* Hover'da hafif büyütme efekti */
+                            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.8); /* Hover durumunda resmin çevresinde koyu gölge */
+                        }
+            </style>
+
+
+            <!-- Left and right controls -->
+            <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="right carousel-control" href="#myCarousel" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </div>
+
+    <style>
+        /* Sol ve sağ kontrol düğmeleri */
+        .carousel-control {
+            width: auto; /* Genişliği otomatik ayarla */
+            background: none; /* Arka planı kaldır */
+            color: #000; /* İkon rengi siyah */
+            opacity: 0.8; /* Hafif şeffaflık */
+            transition: opacity 0.3s ease; /* Hover için animasyon */
+        }
+
+            .carousel-control:hover {
+                opacity: 1; /* Üzerine gelindiğinde tam görünürlük */
+            }
+
+            /* Sol kontrol düğmesini daha yakın konumlandır */
+            .carousel-control.left {
+                left: 50px; /* Resme daha yakın */
+            }
+
+            /* Sağ kontrol düğmesini daha yakın konumlandır */
+            .carousel-control.right {
+                right: 50px; /* Resme daha yakın */
+            }
+
+            /* Kontrol simgelerinin boyutu */
+            .carousel-control .glyphicon {
+                font-size: 30px; /* Daha büyük ikonlar */
+            }
+
+            /* Eğer grilik tamamen kaldırılmak istenirse */
+            .carousel-control.left, .carousel-control.right {
+                background: transparent; /* Herhangi bir renk olmasın */
+            }
+    </style>
+
+    <div class="container mt-5">
+        <div class="row">
+            @if (User.IsInRole("Admin"))
+            {
+                <div style="position: fixed; top: 100px; left: 10px; z-index: 1000;">
+                    <a href="/Admin/Index" class="btn btn-primary" style="background-color: #d3d3d3; color: #000; border: none; padding: 10px 20px; text-decoration: none;"
+                       onmouseover="this.style.backgroundColor='#ffcc99';"
+                       onmouseout="this.style.backgroundColor='#d3d3d3';">
+                        Admin Paneline Git
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+
+
+
+
+        <div class="row">
+            @if (ViewBag.Categories != null)
+            {
+                foreach (var category in ViewBag.Categories)
+                {
+                    <div class="col-md-4 text-center">
+                        <!-- 3 resim için col-md-4 kullanıyoruz -->
+                        <div class="category-container">
+                            <a href="@Url.Action("CategoryRecipes", "Home", new { categoryName = category.Name })">
+                                <div class="category-image">
+                                    <img src="@category.ImageUrl" alt="@category.Name" />
+                                </div>
+                            </a>
+                            <a href="@Url.Action("CategoryRecipes", "Home", new { categoryName = category.Name })" class="category-name">
+                                @category.Name
+                            </a>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+
+    <!-- Son Eklenen Tarifler -->
+    <div style="width:100%;background-image:url('https://thatix.progressionstudios.com/wp-content/uploads/2020/03/pattern-home.jpg');">
+        <h2 style="text-align:center;"><br /><b>Son Eklenenler</b></h2>
+        <div class="card-container">
+            @if (ViewBag.LatestRecipes != null)
+            {
+                foreach (var recipe in ViewBag.LatestRecipes)
+                {
+                    <div class="card" style="text-decoration: none;">
+                        <a href="@Url.Action("Details", "Recipe", new { id = recipe.Recipe.Id })">
+                            <img src="@recipe.Recipe.ImagePath" alt="@recipe.Recipe.Title" class="card-img">
+                            <div class="card-content">
+                                <h3 class="card-title">@recipe.Recipe.Title</h3>
+                                <p class="card-description">@recipe.Recipe.Description</p>
+                                <p class="chef-name">Şef: @recipe.User?.Username</p> <!-- Şef ismi burada görünüyor -->
+                            </div>
+                        </a>
+                    </div>
+                }
+            }
+            else
+            {
+                <p style="text-align:center;">Henüz tarif eklenmedi.</p>
+            }
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="@Url.Action("AllRecipes", "Home")" class="show-more-btn">Hepsini Göster</a>
+        </div>
+    </div>
+
+</body>
+</html>

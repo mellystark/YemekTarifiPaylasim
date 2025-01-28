@@ -1,0 +1,164 @@
+﻿@model YemekTarifleriUygulamasi.Models.Recipe
+<body style="padding-top: 60px">
+    <div class="container mt-xxl-5 mt-xxl-3">
+        <!-- Tarif Başlığı -->
+        <div class="text-center mt-xxl-5">
+            <h1 class="display-2 fw-bold title"
+                style="color: #f15c00; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); border-bottom: 2px solid #d3d3d3;">
+                @Model.Title
+            </h1>
+
+            <img src="@Model.ImagePath" alt="@Model.Title"
+                 class="img-fluid rounded shadow mt-4 recipe-image"
+                 style="max-height: 400px; object-fit: cover;" />
+
+            <p class="fs-4 text-muted mt-2">@Model.Category</p>
+        </div>
+        <p class="fs-5 text-muted mt-3">
+            Şef: <span style="color: #f15c00;">
+                @(Model.User != null ? Model.User.Username : "Bilinmiyor")
+            </span>
+        </p>
+
+        <!-- Tarif Açıklaması -->
+        <div class="mb-5">
+            <h3 class="border-bottom pb-2 description-title"
+                style="color: #f15c00; border-width: 3px; border-color: #f15c00; font-size: 2rem;">
+                Tarif Açıklaması
+            </h3>
+            <p class="fs-5 lh-lg description-text" style="font-size: 1.5rem;">@Model.Description</p>
+        </div>
+
+        <!-- Malzemeler -->
+        <div class="mb-5">
+            <h3 class="border-bottom pb-2 ingredients-title"
+                style="color: #f15c00; border-width: 3px; border-color: #f15c00; font-size: 2rem;">
+                Malzemeler
+            </h3>
+            <ol class="list-group list-group-numbered ingredients-list">
+                @foreach (var item in @Model.Ingredients.Split(','))
+                {
+                    <li class="list-group-item fs-5" style="font-size: 1.3rem;">@item</li>
+                }
+            </ol>
+        </div>
+
+        <!-- Yapılışı -->
+        <div class="mb-5">
+            <h3 class="border-bottom pb-2 steps-title"
+                style="color: #f15c00; border-width: 3px; border-color: #f15c00; font-size: 2rem;">
+                Yapılışı
+            </h3>
+            <ol class="list-group list-group-numbered steps-list">
+                @foreach (var step in @Model.Steps.Split('.'))
+                {
+                    <li class="list-group-item fs-5" style="font-size: 1.3rem;">@step</li>
+                }
+            </ol>
+        </div>
+
+        <!-- Yorumlar Bölümü -->
+        <div class="container mt-5">
+            <!-- Yorumlar -->
+            <h3 class="border-bottom pb-2" style="color: #f15c00; border-width: 3px; border-color: #f15c00; font-size: 2rem;">
+                Yorumlar
+            </h3>
+
+            <!-- Yorumları Listeleme -->
+            <div class="mb-4">
+                @if (Model.Comments != null && Model.Comments.Any())
+                {
+                    @foreach (var comment in Model.Comments)
+                    {
+                        <div class="mb-3 p-3 border rounded shadow-sm bg-light">
+                            <h5 class="text-primary">@comment.User.Username</h5>
+                            <p class="mb-1">@comment.Content</p>
+                            <small class="text-muted">@comment.CreatedAt.ToString("dd MMM yyyy HH:mm")</small>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">Henüz yorum yapılmamış. İlk yorumu siz yapabilirsiniz!</p>
+                }
+            </div>
+
+            <!-- Yorum Ekleme -->
+            @if (User.Identity.IsAuthenticated)
+            {
+                <form asp-action="AddComment" asp-controller="Recipe" method="post" class="mt-4">
+                    <input type="hidden" name="RecipeId" value="@Model.Id" />
+
+                    <div class="mb-3">
+                        <textarea name="Content" class="form-control" rows="3" placeholder="Yorumunuzu buraya yazın..."
+                                  required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Yorumu Gönder</button>
+                </form>
+            }
+            else
+            {
+                <p class="text-muted">Yorum yapmak için <a href="/Account/Login">giriş yapın</a>.</p>
+            }
+        </div>
+    </div>
+</body>
+
+
+<!-- Animasyonlar için CSS -->
+<style>
+    /* Animasyonlar */
+    .title:hover, .description-title:hover, .ingredients-title:hover, .steps-title:hover {
+        animation: bounce 0.5s;
+    }
+
+    .recipe-image:hover {
+        animation: zoomIn 0.5s;
+    }
+
+   /*  .ingredients-list:hover, .steps-list:hover {
+        animation: fadeInUp 0.5s;
+    } */
+
+    /* Anahtar Animasyonlar */
+    @@keyframes bounce {
+        0%, 100%
+
+    {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+
+    }
+
+    @@keyframes fadeInUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    @@keyframes zoomIn {
+        from
+
+    {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.1);
+    }
+
+    }
+</style>

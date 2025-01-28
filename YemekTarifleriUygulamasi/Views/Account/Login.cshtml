@@ -1,0 +1,91 @@
+﻿@{
+    ViewData["Title"] = "Giriş Yap";
+}
+
+<body class="page-background">
+    <div class="form-container">
+        <h2>Giriş Yap</h2>
+
+
+
+        <form asp-action="Login" method="post">
+            <div class="mb-3">
+                <label for="username" class="form-label">Kullanıcı Adı:</label>
+                <input type="text" class="form-control input-text" id="username" name="username" required />
+
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Şifre:</label>
+                <input type="password" class="form-control input-text" id="password" name="password" required />
+
+            </div>
+            <button type="submit" class="btn btn-primary">Giriş Yap</button>
+            <!-- Eğer hata varsa hata mesajını göster -->
+            @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+            {
+                <div style="color:red;">@ViewBag.ErrorMessage</div>
+            }
+            @* Kullanıcı adı için hata mesajını ModelState üzerinden kontrol et *@
+            @if (ViewData["UsernameError"] != null)
+            {
+                <div class="text-danger">@ViewData["UsernameError"]</div>
+            }
+            @* Şifre için hata mesajını ModelState üzerinden kontrol et *@
+            @if (ViewData["PasswordError"] != null)
+            {
+                <div class="text-danger">@ViewData["PasswordError"]</div>
+            }
+        </form>
+
+        <p class="register-link">Hesabınız yok mu? <a asp-controller="Account" asp-action="Register">Kaydolun</a></p>
+    </div>
+</body>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<style>
+    body.page-background {
+        background-color: #d3d3d3; /* Gri arka plan */
+        margin-top: 160px;
+    }
+
+    .form-container {
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #ffcc99; /* Daha açık turuncu kutu içi */
+        border: 3px solid #cc3333; /* Koyu kırmızı çerçeve ve kalın */
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center; /* Ortalamak için */
+    }
+
+        .form-container h2 {
+            margin-bottom: 20px;
+        }
+
+    .register-link {
+        margin-top: 20px;
+        text-align: center; /* Ortalamak için */
+    }
+
+        .register-link a {
+            color: #cc3333; /* Koyu kırmızı renk */
+            text-decoration: none;
+        }
+
+            .register-link a:hover {
+                text-decoration: underline;
+            }
+
+    .input-text {
+        background-color: #ffffff; /* Beyaz arka plan */
+    }
+
+    /* Kullanıcı adı ve şifre etiketlerini sola yasla */
+    .form-container label {
+        text-align: left;
+        display: block;
+    }
+</style>

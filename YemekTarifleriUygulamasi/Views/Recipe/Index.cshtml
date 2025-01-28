@@ -1,0 +1,173 @@
+﻿@model IEnumerable<YemekTarifleriUygulamasi.Models.Recipe>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tarif Listesi</title>
+    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .card a {
+            text-decoration: none;
+        }
+
+        /* Kartların dış kenarlık rengi */
+        .card {
+            border: 1px solid #d3d3d3; /* Kenarlık rengi */
+            border-radius: 5px; /* Hafif yuvarlatılmış köşeler */
+            box-shadow: none; /* Gölgeleri kaldır */
+            overflow: hidden; /* Taşan içeriği gizle */
+        }
+
+        /* Butonların ve diğer bileşenlerin kenarlık rengi */
+        .btn-success,
+        .btn-danger {
+            border: 1px solid #d3d3d3; /* Buton kenarlarını da düzenle */
+        }
+
+
+        .card-title, .card-description {
+            text-decoration: none;
+        }
+
+        .card:hover .card-title,
+        .card:hover .card-description {
+            text-decoration: none;
+        }
+
+        .btn {
+            border: 1px solid #d3d3d3; /* Gri kenarlık */
+            background-color: #d3d3d3;
+            color: #fff;
+            box-shadow: none; /* Gölgelendirmeyi kaldır */
+        }
+
+            .btn:focus {
+                outline: none; /* Odaklandığında mavi kenarlığı kaldır */
+                box-shadow: none; /* Mavi gölgeyi kaldır */
+            }
+
+            .btn:hover {
+                background-color: #ffcc99; /* Hover arka planı */
+                color: black;
+                border: 1px solid #d3d3d3; /* Hover durumunda kenarlık */
+                text-decoration: none;
+            }
+
+        h1.text-center.text-primary {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: black !important;
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+
+        @@media (max-width: 767px) {
+            .card-img {
+                height: 150px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mt-5">
+        <h1 class="text-center text-primary">Tariflerim</h1>
+
+        <div class="d-flex justify-content-end mb-4">
+            <a href="@Url.Action("Create", "Recipe")" class="btn btn-success">
+                <i class="fas fa-plus-circle"></i> Yeni Tarif Ekle
+            </a>
+        </div>
+
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="@item.ImagePath" alt="@item.Title" class="card-img" />
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Title</h5>
+                            <p class="card-description">
+                                @if (!string.IsNullOrEmpty(item.Description) && item.Description.Length > 100)
+                                {
+                                    @item.Description.Substring(0, 100)
+                                }
+                                else
+                                {
+                                    @item.Description
+                                }
+                            </p>
+                            <a href="@Url.Action("Edit", "Recipe", new { id = item.Id })" class="btn btn-primary btn-block">Düzenle</a>
+
+                            <!-- SweetAlert Silme Butonu -->
+                            <button onclick="confirmDelete('@Url.Action("DeleteConfirmed", "Recipe", new { id = item.Id })')" class="btn btn-danger btn-block mt-2">Sil</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @if (!Model.Any())
+        {
+            <p class="text-center text-muted">Henüz tarif eklenmedi.</p>
+        }
+    </div>
+
+    <script>
+        // SweetAlert ile Silme İşlemi
+        function confirmDelete(deleteUrl) {
+            Swal.fire({
+                title: 'Emin misiniz?',
+                text: "Bu işlem geri alınamaz!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Evet, sil!',
+                cancelButtonText: 'İptal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Silme işlemini gerçekleştir
+                    fetch(deleteUrl, {
+                        method: 'POST',
+                        headers: {
+                            'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val() // CSRF Token
+                        }
+                    }).then(response => {
+                        if (response.ok) {
+                            Swal.fire(
+                                'Silindi!',
+                                'Tarif basarıyla silindi.',
+                                'success'
+                            ).then(() => {
+                                location.reload(); // Sayfayı yenile
+                            });
+                        } else {
+                            Swal.fire(
+                                'Hata!',
+                                'Silme islemi basarısız oldu.',
+                                'error'
+                            );
+                        }
+                    }).catch(error => {
+                        Swal.fire(
+                            'Hata!',
+                            'Bir sorun olustu.',
+                            'error'
+                        );
+                    });
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

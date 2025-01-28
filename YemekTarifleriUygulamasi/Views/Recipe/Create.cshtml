@@ -1,0 +1,167 @@
+﻿@model YemekTarifleriUygulamasi.Models.Recipe
+
+<div class="container mt-5">
+    <div class="card shadow-lg mx-auto" style="width: 90%; max-width: 800px; border-radius: 15px; overflow: hidden;">
+        <div class="card-header text-center text-white" style="background: linear-gradient(90deg, #ff7e5f, #feb47b); padding: 20px;">
+            <h2 class="mb-0" style="font-family: 'Poppins', sans-serif; font-size: 2rem; margin-top: 20px;">Tarifini Paylaş</h2>
+        </div>
+
+        <div class="card-body p-4" style="background-color: #f9f9f9;">
+            <form id="recipeForm" asp-action="Create" method="post" enctype="multipart/form-data">
+                <!-- Resim Yükleme -->
+                <div class="mb-5 text-center">
+                    <label for="Image" class="form-label fw-bold" style="display: block;">Tarif Resmi</label>
+                    <input type="file" id="Image" name="Image" class="form-control visually-hidden" accept="image/*" onchange="previewImage(event)" />
+                    <div class="upload-area" onclick="document.getElementById('Image').click();" style="border: 2px dashed #ff7e5f; border-radius: 10px; padding: 20px; cursor: pointer;">
+                        <p class="text-muted" id="uploadText">Resim yüklemek için tıklayın..</p>
+                        <img id="previewImg" src="" alt="Yüklenen Resim" style="max-width: 100%; height: auto; display: none; margin-top: 15px; border-radius: 10px;" />
+                    </div>
+                    <span id="imageError" style="color:red; display:none;">Lütfen bir resim yükleyin.</span> <!-- Hata Mesajı -->
+                </div>
+
+                <!-- Tarif Adı -->
+                <div class="mb-4">
+                    <label for="Title" class="form-label fw-bold">Tarif Adı</label>
+                    <input type="text" id="Title" name="Title" class="form-control shadow-input" placeholder="Tarifin adını yazın" required />
+                </div>
+
+                <!-- Tarif Açıklaması -->
+                <div class="mb-4">
+                    <label for="Description" class="form-label fw-bold">Tarif Açıklaması</label>
+                    <textarea id="Description" name="Description" class="form-control shadow-input" rows="3" placeholder="Tarif hakkında kısa bir açıklama yazın" required></textarea>
+                </div>
+
+                <!-- Malzemeler -->
+                <div class="mb-4">
+                    <label for="Ingredients" class="form-label fw-bold">Malzemeler</label>
+                    <textarea id="Ingredients" name="Ingredients" class="form-control shadow-input" rows="4" placeholder="Gerekli malzemeleri yazın" required></textarea>
+                </div>
+
+                <!-- Yapılışı -->
+                <div class="mb-4">
+                    <label for="Steps" class="form-label fw-bold">Yapılışı</label>
+                    <textarea id="Steps" name="Steps" class="form-control shadow-input" rows="5" placeholder="Adım adım tarifi yazın" required></textarea>
+                </div>
+
+                <!-- Kategori -->
+                <span id="categoryError" style="color:red; display:none;">Kategori seçmek zorunludur.</span>
+                <div class="mb-4">
+                    <label for="Category" class="form-label fw-bold">Kategori</label>
+                    @Html.DropDownListFor(
+                             model => model.Category,
+                             (SelectList)ViewBag.Categories,
+                             "Kategori Seçin",
+                             new { @class = "form-select shadow-input", style = "padding: 10px;", required = "required" })
+                </div>
+
+                <!-- Gönder Butonu -->
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-lg text-white px-5" style="background: linear-gradient(90deg, #ff7e5f, #feb47b); border: none; border-radius: 25px; padding: 10px 30px; font-size: 1.2rem; font-family: 'Poppins', sans-serif;">
+                        <i class="bi bi-cloud-upload"></i> Tarifi Paylaş
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #fafafa;
+        margin: 0;
+        padding: 0;
+    }
+
+    .form-control {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 10px;
+    }
+
+        .form-control.shadow-input {
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #ff7e5f;
+            box-shadow: 0 0 8px rgba(255, 126, 95, 0.6);
+        }
+
+    .upload-area:hover {
+        background-color: #ffebe6;
+        border-color: #feb47b;
+    }
+
+    .form-select:focus {
+        border-color: #ff7e5f;
+        box-shadow: 0 0 8px rgba(255, 126, 95, 0.6);
+    }
+
+    .upload-area img {
+        display: block;
+        margin: 0 auto;
+    }
+
+    #previewImg {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+    }
+
+    .card {
+        transition: none !important;
+        transform: none !important;
+    }
+
+    .upload-area {
+        transition: background-color 0.3s, border-color 0.3s;
+    }
+
+        .upload-area:hover {
+            background-color: #ffebe6;
+            border-color: #feb47b;
+        }
+
+    button {
+        transition: none;
+    }
+</style>
+
+<script>
+    function previewImage(event) {
+        var reader = new FileReader();
+        reader.onload = function () {
+            var output = document.getElementById('previewImg');
+            var uploadText = document.getElementById('uploadText');
+            output.src = reader.result;
+            output.style.display = 'block';
+            uploadText.style.display = 'none';
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+
+    document.querySelector('#recipeForm').addEventListener('submit', function (event) {
+        const imageInput = document.getElementById('Image');
+        const imageError = document.getElementById('imageError');
+        const categorySelect = document.getElementById('Category');
+        const categoryError = document.getElementById('categoryError');
+
+        // Başlangıçta hata mesajlarını gizle
+        imageError.style.display = 'none';
+        categoryError.style.display = 'none';
+
+        // Resim seçilmediyse, hata mesajını göster
+        if (imageInput.files.length === 0) {
+            imageError.style.display = 'inline';
+            event.preventDefault();  // Formu engelle
+        }
+
+        // Kategori seçilmediyse, hata mesajını göster
+        if (categorySelect.value === "Kategori Seçin") {
+            categoryError.style.display = 'inline';
+            event.preventDefault();  // Formu engelle
+        }
+    });
+</script>

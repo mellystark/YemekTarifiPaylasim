@@ -1,0 +1,283 @@
+﻿@model YemekTarifleriUygulamasi.Controllers.AdminViewModel
+@{
+    Layout = null;
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<!-- DataTables CSS -->
+<link href="https://cdn.jsdelivr.net/npm/datatables.net-bs5@1.12.1/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+<!-- jQuery ve DataTables JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net@1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net-bs5@1.12.1/js/dataTables.bootstrap5.min.js"></script>
+
+<style>
+    body {
+        background-color: #333; /* Arka plan koyu gri */
+        color: #fff; /* Yazılar beyaz */
+    }
+
+    .admin-panel-header {
+        background-color: #000; /* Siyah başlık kutusu */
+        color: #fff; /* Beyaz yazı */
+        text-align: center;
+        padding: 10px;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+
+    .logout-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    .admin-panel {
+        display: flex;
+        justify-content: space-between; /* Kutuları sağa sola yerleştir */
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .section-box {
+        background-color: #fff; /* Kutular beyaz */
+        color: #000; /* Yazılar siyah */
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Hafif gölge */
+        max-width: 500px; /* Genişlik artırıldı */
+        overflow: hidden;
+        transition: max-width 0.5s ease, padding 0.5s ease;
+    }
+
+        .section-box.expanded {
+            max-width: 800px; /* Açılınca genişlik artırıldı */
+            padding: 20px;
+        }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1.25rem;
+        margin-bottom: 20px;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .table th,
+    .table td {
+        vertical-align: middle;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f2f2f2; /* Hover efekti */
+    }
+
+    /* Modal body içeriği stilini düzenle */
+    .modal-body {
+        color: #000; /* Yazıyı siyah yap */
+        font-size: 1rem; /* Yazı boyutunu ayarla */
+    }
+</style>
+
+<div class="admin-panel-header">Admin Paneli</div>
+
+<div class="logout-button">
+    <form asp-controller="Account" asp-action="Logout" method="post">
+        <button type="submit" class="btn btn-danger">
+            <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+        </button>
+    </form>
+</div>
+
+<div class="container">
+    <div class="admin-panel">
+        <!-- Kullanıcılar Bölümü -->
+        <div class="section-box" id="userBox">
+            <div class="section-header">
+                <h3>Kullanıcılar</h3>
+                <div>
+                    <button class="btn btn-custom btn-sm" onclick="toggleVisibility('userSection', document.getElementById('userSection').classList.contains('hidden'))">Göster/Gizle</button>
+                </div>
+            </div>
+            <div id="userSection" class="hidden">
+                <!-- hidden sınıfını ekliyoruz -->
+                <table class="table table-hover mt-3" id="userTable">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Kullanıcı Adı</th>
+                            <th>Admin</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model.Users)
+                        {
+                            <tr id="user-@user.Id">
+                                <td>@user.Username</td>
+                                <td>
+                                    @if (user.IsAdmin == true)
+                                    {
+                                        <span class="badge bg-success">Evet</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Hayır</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (user.IsAdmin != true)
+                                    {
+                                        <a href="#" class="btn btn-custom btn-sm delete-user" data-id="@user.Id" data-name="@user.Username">
+                                            <i class="bi bi-trash3"></i> Sil
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Silinemez</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tarifler Bölümü -->
+        <div class="section-box" id="recipeBox">
+            <div class="section-header">
+                <h3>Tarifler</h3>
+                <div>
+                    <button class="btn btn-custom btn-sm" onclick="toggleVisibility('recipeSection', document.getElementById('recipeSection').classList.contains('hidden'))">Göster/Gizle</button>
+                </div>
+            </div>
+            <div id="recipeSection" class="hidden">
+                <!-- hidden sınıfını ekliyoruz -->
+                <table class="table table-hover mt-3" id="recipeTable">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Tarif Adı</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var recipe in Model.Recipes)
+                        {
+                            <tr id="recipe-@recipe.Id">
+                                <td>@recipe.Title</td>
+                                <td>
+                                    <a href="#" class="btn btn-custom btn-sm delete-recipe" data-id="@recipe.Id" data-title="@recipe.Title">
+                                        <i class="bi bi-trash3"></i> Sil
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Silme Onayı Modal -->
+        <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteConfirmationModalLabel">Silme Onayı</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Silmek istediğinize emin misiniz?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hayır</button>
+                        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Evet</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast for success message -->
+        <div id="successToast" class="toast toast-success" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-body">
+                Silme işlemi başarıyla gerçekleştirildi.
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Göster/Gizle fonksiyonu
+    function toggleVisibility(sectionId, show) {
+        const section = document.getElementById(sectionId);
+        if (show) {
+            section.classList.remove('hidden');  // Göster
+        } else {
+            section.classList.add('hidden');  // Gizle
+        }
+    }
+
+    // DataTables'ı initialize et
+    $(document).ready(function () {
+        $('#userTable').DataTable();
+        $('#recipeTable').DataTable();
+    });
+
+    let deleteId = null;
+    let deleteType = null;
+
+    // Kullanıcı silme işlemi
+    document.querySelectorAll('.delete-user').forEach(button => {
+        button.addEventListener('click', function (event) {
+            event.preventDefault();
+            deleteId = this.getAttribute('data-id');
+            deleteType = 'user';
+            $('#deleteConfirmationModal').modal('show'); // Silme onayı modalını göster
+        });
+    });
+
+    // Tarif silme işlemi
+    document.querySelectorAll('.delete-recipe').forEach(button => {
+        button.addEventListener('click', function (event) {
+            event.preventDefault();
+            deleteId = this.getAttribute('data-id');
+            deleteType = 'recipe';
+            $('#deleteConfirmationModal').modal('show'); // Silme onayı modalını göster
+        });
+    });
+
+    // Silme işlemini onayla
+    document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
+        const url = deleteType === 'user' ? `/Admin/DeleteUser/${deleteId}` : `/Admin/DeleteRecipe/${deleteId}`;
+
+        fetch(url, { method: 'DELETE' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Eğer kullanıcı silindiyse, onun tariflerini de sil
+                    if (deleteType === 'user') {
+                        // Kullanıcıya ait tarifler frontend'den de silinir
+                        document.querySelectorAll(`.user-${deleteId}`).forEach(recipe => {
+                            recipe.remove(); // Tarifleri sil
+                        });
+                    }
+
+                    // Tablodan ilgili satırı kaldır
+                    document.getElementById(`${deleteType}-${deleteId}`).remove();
+                    $('#deleteConfirmationModal').modal('hide'); // Modal'ı kapat
+                    // Silme başarı toast'ını göster
+                    const toast = new bootstrap.Toast(document.getElementById('successToast'));
+                    toast.show();
+                } else {
+                    alert("Silme işlemi başarısız oldu: " + data.message);
+                }
+            })
+            .catch(error => {
+                alert("Bir hata oluştu: " + error);
+            });
+    });
+</script>

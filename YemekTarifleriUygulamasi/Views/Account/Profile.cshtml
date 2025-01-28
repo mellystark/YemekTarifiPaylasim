@@ -1,0 +1,362 @@
+﻿@{
+    ViewData["Title"] = "Profilim";
+}
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 50px 0;
+        margin-top: 13px;
+    }
+
+    .card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        width: 90%;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .card-header {
+        background: #ffcc99;
+        color: white;
+        padding: 20px;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+        text-align: center;
+    }
+
+    .card-body {
+        padding: 40px 60px;
+    }
+
+    .profile-img {
+        width: 180px;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin-bottom: 20px;
+        border: 4px solid #f0f0f0;
+    }
+
+    .profile-info {
+        margin-left: 40px;
+    }
+
+        .profile-info h3 {
+            color: black;
+            font-size: 2rem;
+            font-weight: bold;
+            position: relative;
+            top: -32px !important;
+            border-bottom: 2px solid #5f5f5f;
+            padding-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+        }
+
+        .profile-info p {
+            font-size: 1.1rem;
+            color: #333;
+            margin: 20px 0;
+        }
+
+    .btn-profile {
+        background: #d3d3d3;
+        color: white;
+        border-radius: 10px;
+        padding: 10px 30px;
+        margin-top: 20px;
+        text-decoration: none;
+        transition: background 0.3s;
+        border: 2px solid #dc3545; /* Butonun dış çerçeve rengi değiştirildi */
+    }
+
+        .btn-profile:hover {
+            background: #ffcc99;
+            border: 2px solid #dc3545; /* Butonun dış çerçeve rengi değiştirildi */
+        }
+
+    .form-control {
+        border-radius: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .alert {
+        margin-bottom: 20px;
+    }
+
+    .file-input {
+        display: none;
+    }
+
+    .file-label {
+        background-color: #d3d3d3;
+        color: white;
+        padding: 10px 30px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-size: 1rem;
+        border: 2px solid #dc3545; /* Butonun dış çerçeve rengi değiştirildi */
+    }
+
+        .file-label:hover {
+            background-color: #ffcc99;
+            border: 2px solid #dc3545; /* Butonun dış çerçeve rengi değiştirildi */
+        }
+
+    .profile-img-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .col-md-4 {
+        text-align: center;
+    }
+
+    .col-md-8 {
+        flex: 1;
+    }
+
+    .update-btn-container {
+        display: flex;
+        justify-content: center;
+        gap: 32px; /* Butonlar arası mesafe */
+        margin-top: 20px;
+    }
+
+
+        .update-btn-container .btn-update {
+            background-color: #d3d3d3;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-align: center;
+            transition: background-color 0.3s;
+            border: 2px solid #dc3545; /* Butonun dış çerçeve rengi değiştirildi */
+        }
+
+            .update-btn-container .btn-update:hover {
+                background-color: #ffcc99;
+            }
+
+    .logout-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background-color: #dc3545;
+        color: white;
+        border-radius: 10px;
+        padding: 10px 20px;
+        transition: background-color 0.3s;
+    }
+
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
+
+    .update-profile-form {
+        display: none;
+        margin-top: 30px;
+    }
+
+    .btn.btn-primary {
+        background-color: #d3d3d3;
+        color: white;
+        border-radius: 10px;
+        padding: 15px 30px;
+        border: 2px solid #dc3545;
+        width: 100%; /* Opsiyonel, buton genişliği eşit olur */
+        transition: background-color 0.3s;
+    }
+
+        .btn.btn-primary:hover {
+            background-color: #ffcc99;
+            border: 2px solid #dc3545;
+        }
+
+    /* Şifreyi Değiştir Butonu */
+    .btn.btn-secondary {
+        background-color: #d3d3d3;
+        color: white;
+        border-radius: 10px;
+        padding: 15px 30px;
+        border: 2px solid #dc3545;
+        width: 100%; /* Opsiyonel, buton genişliği eşit olur */
+        transition: background-color 0.3s;
+    }
+
+        .btn.btn-secondary:hover {
+            background-color: #ffcc99;
+            border: 2px solid #dc3545;
+        }
+
+</style>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2>Profilim</h2>
+        </div>
+        <div class="card-body">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success" role="alert">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @TempData["ErrorMessage"]
+                </div>
+            }
+
+            <div class="row">
+                <div class="col-md-4 profile-img-container">
+                    <img src="@(!string.IsNullOrEmpty(Model.ProfileImage) ? Model.ProfileImage : "~/images/default-profile.jpg")"
+                         alt="Profile Image" class="profile-img">
+                    <form enctype="multipart/form-data" method="post" asp-controller="Profile" asp-action="UploadProfileImage">
+                        <div class="form-group">
+                            <input type="file" name="profileImage" class="file-input" id="profileImageInput" />
+                            <label for="profileImageInput" class="file-label">Profil Resmini Güncelle</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-profile">Profil Fotoğrafını Değiştir</button>
+                    </form>
+                </div>
+                <div class="col-md-8">
+                    <div class="profile-info">
+                        <h3>@Model.Username</h3>
+                        <p><strong>Adı:</strong> @Model.FirstName</p>
+                        <p><strong>Soyadı:</strong> @Model.LastName</p>
+                        <p><strong>Email:</strong> @Model.Email</p>
+                    </div>
+                </div>
+            </div>
+
+            
+            <!-- Bilgilerimi Güncelle ve Tarifler Butonları -->
+            <!-- Bilgilerimi Güncelle ve Tarifler Butonları -->
+            <div class="update-btn-container">
+                <button class="btn-update" onclick="toggleUpdateForm()">Bilgilerimi Güncelle</button>
+                <form method="get" action="@Url.Action("Index", "Recipe")" style="display: inline;">
+                    <button type="submit" class="btn-update">Tariflerim</button>
+                </form>
+                @if (User.IsInRole("Admin"))
+                {
+                    <form method="get" action="@Url.Action("Index", "Admin")" style="display: inline;">
+                        <button type="submit" class="btn-update">Admin Paneline Git</button>
+                    </form>
+                }
+            </div>
+
+
+
+            <!-- Profil Güncelleme Formu -->
+            <div class="update-profile-form" id="updateProfileForm">
+                <form method="post" asp-controller="Profile" asp-action="UpdateProfile">
+                    <div class="form-group">
+                        <label for="username">Kullanıcı Adı</label>
+                        <input type="text" class="form-control" id="username" name="Username" value="@Model.Username" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="firstName">Ad</label>
+                        <input type="text" class="form-control" id="firstName" name="FirstName" value="@Model.FirstName" />
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Soyad</label>
+                        <input type="text" class="form-control" id="lastName" name="LastName" value="@Model.LastName" />
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="Email" value="@Model.Email" />
+                    </div>
+
+                    <!-- Şifreyi Değiştir Butonu -->
+                    <div class="form-group">
+                        <button type="button" class="btn btn-secondary" onclick="togglePasswordForm()">Şifreyi Değiştir</button>
+                    </div>
+
+                    <!-- Şifre Değiştirme Formu (Başlangıçta gizli) -->
+                    <div class="password-update-form" id="passwordUpdateForm" style="display: none;">
+                        <div class="form-group">
+                            <label for="password">Yeni Şifre</label>
+                            <input type="password" class="form-control" id="password" name="Password" placeholder="Yeni şifre" />
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Şifreyi Onayla</label>
+                            <input type="password" class="form-control" id="confirmPassword" name="ConfirmPassword" placeholder="Şifreyi onayla" />
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </form>
+            </div>
+
+            <!-- Çıkış Butonu -->
+            <form method="post" asp-controller="Account" asp-action="Logout">
+                <button type="submit" class="btn logout-btn">
+                    Çıkış Yap
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function toggleUpdateForm() {
+        var form = document.getElementById('updateProfileForm');
+        form.style.display = (form.style.display === 'none' || form.style.display === '') ? 'block' : 'none';
+    }
+
+    function togglePasswordForm() {
+        var passwordForm = document.getElementById('passwordUpdateForm');
+        passwordForm.style.display = (passwordForm.style.display === 'none' || passwordForm.style.display === '') ? 'block' : 'none';
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <text>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Başarılı',
+                    text: '@TempData["SuccessMessage"]',
+                    confirmButtonColor: '#ffcc99',
+                });
+        </text>
+    }
+
+    // Hata mesajı için SweetAlert
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <text>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Hata',
+                    text: '@TempData["ErrorMessage"]',
+                    confirmButtonColor: '#dc3545',
+                });
+        </text>
+    }
+</script>

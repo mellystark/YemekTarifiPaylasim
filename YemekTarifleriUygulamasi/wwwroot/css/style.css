@@ -1,0 +1,203 @@
+﻿/*Kategori bölümü css*/
+.category-container {
+    margin: 15px 0;
+    display: flex;
+    flex-direction: column; /* Her resmin altına yazı eklemek için dikey düzende yerleştirelim */
+    align-items: center; /* Resimlerin ortalanmasını sağlamak */
+}
+
+.category-image {
+    position: relative;
+    width: 150px; /* Eski boyutları korudum */
+    height: 150px; /* Eski boyutları korudum */
+    margin-bottom: 10px; /* Resim ile yazı arasındaki boşluk */
+    overflow: hidden;
+    border-radius: 50%;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+    .category-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .category-image:hover {
+        transform: rotate(15deg);
+        opacity: 0.8;
+    }
+
+.category-name {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+/*
+Son Eklenenler bölümü */
+/** {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}*/
+
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+.card-container a{
+    text-decoration:none;
+}
+
+    .card-container a:hover {
+        text-decoration: none;
+    }
+
+.card {
+    width: 300px;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+.card-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-content {
+    padding: 15px;
+}
+
+
+
+
+.card-title {
+    font-size: 1.6rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.card-description {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 15px;
+    text-decoration: none;
+}
+
+
+    .card-description:hover {
+        text-decoration: none; /* Üzerine gelindiğinde de alt çizgi kaldırılır */
+    }
+
+.chef-name {
+    font-size: 0.9rem;
+    color: #333;
+    font-weight: bold;
+}
+
+.show-more-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #cc3333; /* Buton arka plan rengi */
+    color: #fff; /* Yazı rengi beyaz */
+    font-size: 1.2rem;
+    border-radius: 5px;
+    text-decoration: none; /* Linki buton gibi gösterir */
+    transition: background-color 0.3s ease;
+}
+
+    .show-more-btn:hover {
+        background-color: #ffcc99; /* Hover durumunda daha koyu yeşil */
+        color: black;
+        text-decoration:none;
+        font-weight:bold;
+    }
+
+
+/* Alt banner bölümü*/
+/* Alt Banner için temel stil */
+.footer-banner {
+    display: flex;
+    justify-content: space-evenly; /* Bölümler arasındaki boşluğu eşit şekilde dağtırır */
+    align-items: flex-start;
+    padding: 30px;
+    background-color: #333; /* Arka plan rengi */
+    color: white;
+    width: 100%;
+    background-image: url('https://thatix.progressionstudios.com/wp-content/uploads/2020/03/footer.jpg');
+}
+
+    /* Her bölümün genişliğini eşit yapalım, ancak aralarındaki boşluğu azaltalım */
+    .footer-banner > div {
+        flex: 1;
+        margin: 10px;
+        min-width: 250px; /* Bölümlerin çok dar olmaması için minimum genişlik */
+        max-width: 350px; /* Bölümlerin genişliğini sınırlıyoruz */
+    }
+
+    /* İletişim bölümü ikonlar */
+    .footer-banner .contact-info i {
+        margin-right: 10px;
+    }
+
+/* Mail input ve buton */
+.email-contact {
+    display: flex;
+    flex-direction: column;
+}
+
+    .email-contact input {
+        padding: 10px;
+        font-size: 1rem;
+        border-radius: 5px;
+        border: none;
+        margin-bottom: 10px;
+    }
+
+    .email-contact .send-btn {
+        padding: 10px 15px;
+        background-color: #cc3333;
+        border: none;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+        .email-contact .send-btn:hover {
+            background-color: #ffcc99;
+            color:black;
+            font-weight:bold;
+        }
+
+/* Sosyal medya ikonları */
+.social-media {
+    display: flex;
+    justify-content: flex-start; /* İkonları sola hizalar */
+    align-items: center;
+    gap: 15px; /* Aralarındaki boşluğu kontrol et */
+}
+
+    .social-media a {
+        font-size: 2rem;
+        color: white;
+        text-decoration: none;
+    }
+
+        .social-media a:hover {
+            color: #4CAF50; /* Hover rengi */
+        }

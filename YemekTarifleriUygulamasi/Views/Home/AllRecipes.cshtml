@@ -1,0 +1,83 @@
+﻿@model IEnumerable<YemekTarifleriUygulamasi.Models.RecipeWithUserViewModel>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tüm Tarifler</title>
+    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    <style>
+        /* Başlık ve açıklamaya tıklandığında altı çizilmemesi için */
+        .card a {
+            text-decoration: none; /* Altını çizmesini engeller */
+        }
+
+        .card {
+            margin-bottom: 32px; /* Kartlar arasındaki boşluğu 20px yapar */
+        }
+
+        .card-title, .card-description {
+            text-decoration: none; /* Başlık ve açıklamaların altını çizme */
+        }
+
+        .card:hover .card-title,
+        .card:hover .card-description {
+            text-decoration: none; /* Hover (üzerine gelme) durumunda da altı çizilmesin */
+        }
+
+        .btn {
+            background-color: #cc3333;
+            color: #fff;
+        }
+
+            .btn:hover {
+                background-color: #ffcc99; /* Hover durumunda daha koyu yeşil */
+                color: black;
+                text-decoration: none;
+            }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px; /* Boşluğu buradan ayarlayabilirsiniz */
+        }
+
+
+    </style>
+</head>
+<body>
+
+    <div class="container mt-5">
+        <h2>Tüm Tarifler</h2>
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="@item.Recipe.ImagePath" alt="@item.Recipe.Title" class="card-img">
+                        <div class="card-content">
+                            <h3 class="card-title">@item.Recipe.Title</h3>
+                            <p class="card-description">
+                                @if (!string.IsNullOrEmpty(item.Recipe.Description) && item.Recipe.Description.Length > 100)
+                                {
+                                    @item.Recipe.Description.Substring(0, 100)
+                                   
+                                            }
+                                else
+                                {
+                                    @item.Recipe.Description
+                                }
+                            </p>
+                            <p>Şef: @item.User?.Username</p> <!-- Şefin ismi burada görünüyor -->
+                            <center><a href="@Url.Action("Details", "Recipe", new { id = item.Recipe.Id })" class="btn btn-primary">Devamını Gör</a></center>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+</body>
+</html>

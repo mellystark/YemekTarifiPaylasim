@@ -1,0 +1,14 @@
+﻿@model YemekTarifleriUygulamasi.Models.Recipe
+@using YemekTarifleriUygulamasi.Helpers
+
+<h1>Delete Recipe</h1>
+
+<div>
+    @Html.DeleteConfirmation(
+            id: Model.Id,
+            title: Model.Title,
+            deleteAction: "DeleteConfirmed",
+            cancelAction: "Index",
+            controller: "Recipe"
+            )
+</div>

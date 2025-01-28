@@ -1,0 +1,83 @@
+﻿@using System.Linq
+@{
+    ViewData["Title"] = ViewBag.CategoryName + " Tarifleri";
+}
+
+@model IEnumerable<YemekTarifleriUygulamasi.Models.RecipeWithUserViewModel>
+
+<style>
+    .card {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border: none;
+        transition: transform 0.2s, box-shadow 0.2s;
+        margin-top: 70px;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .card-text {
+        font-size: 0.9rem;
+        color: #555;
+        line-height: 1.4;
+    }
+
+    .card-img-top {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        cursor: pointer;
+    }
+
+    .row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .col-md-3 {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+</style>
+
+<h2 class="text-center my-4">@ViewBag.CategoryName Tarifleri</h2>
+
+@if (Model != null && Model.Any())
+{
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="@item.Recipe.ImagePath" alt="@item.Recipe.Title" class="card-img-top">
+                    <div class="card-body">
+                        <h3 class="card-title">@item.Recipe.Title</h3>
+                        <p class="card-text">
+                            @if (!string.IsNullOrEmpty(item.Recipe.Description) && item.Recipe.Description.Length > 100)
+                            {
+                                @item.Recipe.Description.Substring(0, 100)
+                            }
+                            else
+                            {
+                                @item.Recipe.Description
+                            }
+                        </p>
+                        <p class="card-text"><strong>Şef:</strong> @item.User.Username</p>
+                        <a href="@Url.Action("Details", "Recipe", new { id = item.Recipe.Id })" class="btn btn-primary">Devamını Gör</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p class="text-center">Bu kategoride henüz tarif eklenmemiş.</p>
+}
